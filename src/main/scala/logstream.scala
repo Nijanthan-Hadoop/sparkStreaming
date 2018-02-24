@@ -12,8 +12,10 @@ object logstream {
     val ssc = new StreamingContext(sparkConf, Seconds(30))
     val messages: InputDStream[(String, String)] = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
 
-    val lines = messages.toDF
-    lines.show()
+    val lines = messages.map(_.value)
+    val words = lines.flatMap(_.split(" "))
+    val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)
+    wordCounts.print()
 //    val linesFiltered = lines.filter(rec => rec.contains("GET /department/"))
 //    val countByDepartment = linesFiltered.
 //      map(rec => (rec.split(" ")(6).split("/")(2), 1)).
