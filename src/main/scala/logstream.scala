@@ -2,6 +2,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream.ReceiverInputDStream
 import org.apache.spark.streaming.flume._
+import org.apache.spark.streaming.kafka.KafkaUtils
 
 
 object logstream {
