@@ -9,6 +9,7 @@ scalaVersion := "2.11.11"
 //  "confluent" at "http://packages.confluent.io/maven/"
 //)
 
+libraryDependencies += "org.apache.hadoop" % "hadoop-hdfs" % "2.6.0"
 libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.0"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.1.0"
 libraryDependencies += "org.apache.spark" %% "spark-hive" % "2.1.0"
