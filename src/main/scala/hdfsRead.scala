@@ -8,7 +8,7 @@ object hdfsRead {
 
   def main(args:Array[String]): Unit = {
 
-    val path = new Path("/file1")
+    val path = new Path("/userdata1.parquet")
     val conf = new Configuration()
     val fileSystem = FileSystem.get(conf)
     val stream = fileSystem.open(path)
