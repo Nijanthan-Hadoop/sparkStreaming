@@ -29,7 +29,7 @@ object hdfsRead {
 
     for ( i <- 1 to 10)
     {
-      val record = new ProducerRecord(TOPIC,"key",s"hello $i)
+      val record = new ProducerRecord(TOPIC,"key",s"hello $i")
         producer.send(record)
     }
 
