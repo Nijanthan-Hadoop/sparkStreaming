@@ -7,16 +7,16 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 
 object logstream {
   def main(args: Array[String]) {
-    val sparkConf = new SparkConf().setAppName("DepartmentWiseCount").setMaster("yarn-client")
-    val topicsSet = "log_topic".split(",").toSet
-    val kafkaParams = Map[String, String]("metadata.broker.list" -> "10.0.1.4:9092,10.0.1.5:9092,10.0.1.6:9092")
-    val ssc = new StreamingContext(sparkConf, Seconds(30))
-    val messages: InputDStream[(String, String)] = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
+////    val sparkConf = new SparkConf().setAppName("DepartmentWiseCount").setMaster("yarn-client")
+ //   val topicsSet = "log_topic".split(",").toSet
+  //  val kafkaParams = Map[String, String]("metadata.broker.list" -> "10.0.1.4:9092,10.0.1.5:9092,10.0.1.6:9092")
+  //  val ssc = new StreamingContext(sparkConf, Seconds(30))
+   // val messages: InputDStream[(String, String)] = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
 
-    val lines = messages.map(_.value)
-    val words = lines.flatMap(_.split(" "))
-    val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)
-    wordCounts.print()
+  //  val lines = messages.map(_.value)
+  //  val words = lines.flatMap(_.split(" "))
+  //  val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)
+  //  wordCounts.print()
 //    val linesFiltered = lines.filter(rec => rec.contains("GET /department/"))
 //    val countByDepartment = linesFiltered.
 //      map(rec => (rec.split(" ")(6).split("/")(2), 1)).
@@ -25,8 +25,8 @@ object logstream {
 //    //    countByDepartment.saveAsTextFiles(args(0))
 //    // Below function call will save the data into HDFS
 //    countByDepartment.saveAsTextFiles(args(0))
-    ssc.start()
-    ssc.awaitTermination()
+   // ssc.start()
+  //  ssc.awaitTermination()
   }
 
 

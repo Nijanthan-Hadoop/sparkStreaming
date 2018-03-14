@@ -1,0 +1,19 @@
+name := "sparkstreaming"
+
+version := "0.1"
+
+val confluentVersion = "3.0.0"
+
+val sparkVersion = "2.1.0"
+
+resolvers ++= Seq(
+  "confluent" at "http://packages.confluent.io/maven/"
+)
+
+libraryDependencies ++= Seq ("org.apache.spark" %% "spark-core" % sparkVersion % "provided",
+"org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
+"org.apache.spark" %% "spark-hive" % sparkVersion % "provided",
+"org.apache.kafka" % "kafka_2.11" % "0.10.0.0",
+"io.confluent" % "kafka-avro-serializer" % confluentVersion
+)
+
