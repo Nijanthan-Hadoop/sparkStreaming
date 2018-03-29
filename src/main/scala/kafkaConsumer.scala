@@ -19,17 +19,17 @@ import org.apache.log4j.{ Level, Logger }
 
 object kafkaConsumer extends App {
 
-  val conf = new SparkConf().setAppName("kafka-consumer")
-  val sc = new SparkContext(conf)
-  val ssc = new StreamingContext(sc, Seconds(20))
-  val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092", "schema.registry.url" -> "http://localhost:8081", "auto.offset.reset" -> "largest", "group.id" -> "group1")
-  val topics = ""
-  val topicSet = Set(topics)
-  val messages = KafkaUtils.createDirectStream[Object, Object, KafkaAvroDecoder, KafkaAvroDecoder](ssc, kafkaParams, topicSet).map(_._2)
-  val lines = messages.map(data => data.toString).toDF
-  lines.show()
-  ssc.start()
-  ssc.awaitTermination()
+//  val conf = new SparkConf().setAppName("kafka-consumer")
+//  val sc = new SparkContext(conf)
+//  val ssc = new StreamingContext(sc, Seconds(20))
+//  val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092", "schema.registry.url" -> "http://localhost:8081", "auto.offset.reset" -> "largest", "group.id" -> "group1")
+//  val topics = ""
+//  val topicSet = Set(topics)
+//  val messages = KafkaUtils.createDirectStream[Object, Object, KafkaAvroDecoder, KafkaAvroDecoder](ssc, kafkaParams, topicSet).map(_._2)
+//  val lines = messages.map(data => data.toString).toDF
+//  lines.show()
+//  ssc.start()
+//  ssc.awaitTermination()
 
 
 }
