@@ -12,7 +12,7 @@ object kafkaProducer {
   def main(args:Array[String]): Unit = {
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
-    props.put("schema.registry.url","http://0.0.0.0:8085")
+    props.put("schema.registry.url","http://0.0.0.0:8081")
     props.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer")
     props.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer")
     props.put("acks", "1")
