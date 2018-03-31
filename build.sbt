@@ -20,4 +20,5 @@ libraryDependencies += "org.apache.kafka" %% "kafka" % "0.11.0.2"
 libraryDependencies += "com.databricks" %% "spark-avro" % "4.0.0"
 libraryDependencies += "org.apache.avro" % "avro" % "1.8.2"
 libraryDependencies += "io.confluent" % "kafka-avro-serializer" % "3.2.1"
-
+libraryDependencies += "org.apache.spark" %% "spark-streaming" % "2.1.0" % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-streaming-kafka-0-10" % "2.1.0"
