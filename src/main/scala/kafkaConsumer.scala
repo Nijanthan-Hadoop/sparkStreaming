@@ -43,8 +43,8 @@ object kafkaConsumer  {
      // val messages = KafkaUtils.createDirectStream[Object, Object, KafkaAvroDecoder, KafkaAvroDecoder](ssc, kafkaParams, topicSet).map(_._2)
      val stream = KafkaUtils.createDirectStream[String, String](
          ssc,
-         PreferConsistent,
-         Subscribe[String, String](topics, kafkaParams)
+       LocationStrategies.PreferConsistent,
+       ConsumerStrategies.Subscribe[String, String](topicSet, kafkaParams)
      )
 
 
