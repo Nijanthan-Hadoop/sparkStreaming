@@ -37,13 +37,14 @@ object kafkaProducer {
     val valueSchemaAvro = schemaParser.parse(valueSchemaJson)
     val avroRecord = new GenericData.Record(valueSchemaAvro)
 
-    val mary = new User("nijanthan",3,"blue")
+    val mary = new User("rnijanthan",13,"tblue")
     avroRecord.put("name",mary.name)
     avroRecord.put("favoriteNumber",mary.favoriteNumber)
     avroRecord.put("favoriteColor",mary.favoriteColor)
 
     val record = new ProducerRecord("nijavro", key, avroRecord)
-    val ack = producer.send(record)
+    val ack = producer.send(record).get()
+
   }
 
 }
