@@ -42,7 +42,7 @@ object kafkaProducer {
     avroRecord.put("favoriteNumber",mary.favoriteNumber)
     avroRecord.put("favoriteColor",mary.favoriteColor)
 
-    val record = new ProducerRecord("avro", key, avroRecord)
+    val record = new ProducerRecord("nijavro", key, avroRecord)
     val ack = producer.send(record)
   }
 
