@@ -18,29 +18,33 @@ import org.apache.log4j.{ Level, Logger }
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import io.confluent.kafka.serializers.KafkaAvroDecoder
 
-object kafkaConsumer extends App {
+object kafkaConsumer  {
 
-  val conf = new SparkConf().setAppName("kafka-consumer")
-  val sc = new SparkContext(conf)
-  val ssc = new StreamingContext(sc, Seconds(20))
-  val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092", "schema.registry.url" -> "http://localhost:8081", "auto.offset.reset" -> "largest", "group.id" -> "group1")
-  val topics = "avro"
-  val topicSet = Set(topics)
-  val messages = KafkaUtils.createDirectStream[Object, Object, KafkaAvroDecoder, KafkaAvroDecoder](ssc, kafkaParams, topicSet).map(_._2)
-  val lines = messages.map(data => data.toString)
-  lines.foreachRDD(rdd => {
-    if (rdd.count != 0) {
-      messages.foreachRDD { rdds =>
-        val offsetRanges = rdds.asInstanceOf[HasOffsetRanges].offsetRanges
-        val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-        val data = hiveContext.read.json(rdd)
-        data.printSchema()
-        data.show()
+  def main(args:Array[String]): Unit ={
+
+      val conf = new SparkConf().setAppName("kafka-consumer")
+      val sc = new SparkContext(conf)
+      val ssc = new StreamingContext(sc, Seconds(20))
+      val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092", "schema.registry.url" -> "http://localhost:8081", "auto.offset.reset" -> "largest", "group.id" -> "group1")
+      val topics = "avro"
+      val topicSet = Set(topics)
+      val messages = KafkaUtils.createDirectStream[Object, Object, KafkaAvroDecoder, KafkaAvroDecoder](ssc, kafkaParams, topicSet).map(_._2)
+      val lines = messages.map(data => data.toString)
+
+    lines.foreachRDD(rdd => {
+      if (rdd.count != 0) {
+        messages.foreachRDD { rdds =>
+          val offsetRanges = rdds.asInstanceOf[HasOffsetRanges].offsetRanges
+          val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+          val data = hiveContext.read.json(rdd)
+          data.printSchema()
+          data.show()
+        }
       }
     }
 
-  ssc.start()
-  ssc.awaitTermination()
+      ssc.start()
+      ssc.awaitTermination()
 
-
+  }
 }
