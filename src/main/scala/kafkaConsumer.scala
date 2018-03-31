@@ -31,17 +31,17 @@ object kafkaConsumer  {
       val messages = KafkaUtils.createDirectStream[Object, Object, KafkaAvroDecoder, KafkaAvroDecoder](ssc, kafkaParams, topicSet).map(_._2)
       val lines = messages.map(data => data.toString)
 
-    lines.foreachRDD(rdd => {
-      if (rdd.count != 0) {
-        messages.foreachRDD { rdds =>
-          val offsetRanges = rdds.asInstanceOf[HasOffsetRanges].offsetRanges
-          val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-          val data = hiveContext.read.json(rdd)
-          data.printSchema()
-          data.show()
-        }
-      }
-    }
+//    lines.foreachRDD(rdd => {
+//      if (rdd.count != 0) {
+//        messages.foreachRDD { rdds =>
+//          val offsetRanges = rdds.asInstanceOf[HasOffsetRanges].offsetRanges
+//          val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+//          val data = hiveContext.read.json(rdd)
+//          data.printSchema()
+//          data.show()
+//        }
+//      }
+//    }
 
       ssc.start()
       ssc.awaitTermination()
