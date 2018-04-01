@@ -26,7 +26,7 @@ object oldConsumer extends App {
 
   val topics = Array("nijavro")
   val stream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](topics, kafkaParams))
-  stream.print()
+//  stream.print()
 
   //ConsumerRecord(topic = test_mysql_sample, partition = 0, offset = 67, CreateTime = 1505379645403, checksum = 2903150596, serialized key size = -1, serialized value size = 19, key = null, value = {"c1":1,"c2":{"string":"a"},"c3":{"string":"b"}})
 
