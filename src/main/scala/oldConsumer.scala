@@ -30,61 +30,61 @@ object oldConsumer extends App {
   val stream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](topics, kafkaParams))
 //  stream.print()
 
-  val kafkaStream = KafkaUtils.createDirectStream[String, String](
-    ssc,
-    PreferConsistent,
-    Subscribe[String, String](topics, kafkaParams)
-  )
-  val schemaRegistyUrl="http://0.0.0.0:8081"
-  private lazy val schemaRegistry = new CachedSchemaRegistryClient(schemaRegistyUrl, 100)
-  private lazy val kafkaAvroDecoder = new KafkaAvroDecoder(schemaRegistry)
-  var listLine= ""
-  kafkaStream.foreachRDD { rdd =>
-    val offsets = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
-    if (!rdd.isEmpty()) {
-      rdd.map(f => {
-        val line = kafkaAvroDecoder.fromBytes(f.value.getBytes).toString
-        println("Generated line is " + line)
-        listLine = listLine + line
-        val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-        val data = hiveContext.read.json(line)
-        data.printSchema()
-        data.show()
-//        data.createOrReplaceTempView("sourceData")
-//        hiveContext.sql("INSERT INTO TABLE default.kafka_demo_1 SELECT * FROM sourceData")
-//        kafkaStream.asInstanceOf[CanCommitOffsets].commitAsync(offsets)
-      })
-    } else {
-      println("######################## RDD is Empty! ########################")
-    }
-  }
+//  val kafkaStream = KafkaUtils.createDirectStream[String, String](
+//    ssc,
+//    PreferConsistent,
+//    Subscribe[String, String](topics, kafkaParams)
+//  )
+//  val schemaRegistyUrl="http://0.0.0.0:8081"
+//  private lazy val schemaRegistry = new CachedSchemaRegistryClient(schemaRegistyUrl, 100)
+//  private lazy val kafkaAvroDecoder = new KafkaAvroDecoder(schemaRegistry)
+//  var listLine= ""
+//  kafkaStream.foreachRDD { rdd =>
+//    val offsets = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+//    if (!rdd.isEmpty()) {
+//      rdd.map(f => {
+//        val line = kafkaAvroDecoder.fromBytes(f.value.getBytes).toString
+//        println("Generated line is " + line)
+//        listLine = listLine + line
+//        val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+//        val data = hiveContext.read.json(line)
+//        data.printSchema()
+//        data.show()
+////        data.createOrReplaceTempView("sourceData")
+////        hiveContext.sql("INSERT INTO TABLE default.kafka_demo_1 SELECT * FROM sourceData")
+////        kafkaStream.asInstanceOf[CanCommitOffsets].commitAsync(offsets)
+//      })
+//    } else {
+//      println("######################## RDD is Empty! ########################")
+//    }
+//  }
 
   //ConsumerRecord(topic = test_mysql_sample, partition = 0, offset = 67, CreateTime = 1505379645403, checksum = 2903150596, serialized key size = -1, serialized value size = 19, key = null, value = {"c1":1,"c2":{"string":"a"},"c3":{"string":"b"}})
 
-//  var offsetRanges = Array[OffsetRange]()
-//
-//  stream.transform {
-//    rdd =>
-//      //Cast the rdd to an interface that lets us get an array of OffsetRange
-//      offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
-//      rdd
-//  }.foreachRDD(rdd => {
-//    if (rdd.count != 0) {
-//      val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-//      val rdds: RDD[String] = rdd.map(e => e.value().asInstanceOf[org.apache.avro.generic.GenericData.Record].toString)
-//      val data = hiveContext.read.json(rdds)
-//      data.printSchema()
-//      data.show()
-////      data.registerTempTable("sourceData")
-////      hiveContext.sql("INSERT INTO TABLE default.kafka_demo_1 SELECT * FROM sourceData")
-//
-//      // some time later, after outputs have completed
-//      stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
-//
-//    } else {
-//      println("RDD is Empty - No data")
-//    }
-//  })
+  var offsetRanges = Array[OffsetRange]()
+
+  stream.transform {
+    rdd =>
+      //Cast the rdd to an interface that lets us get an array of OffsetRange
+      offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+      rdd
+  }.foreachRDD(rdd => {
+    if (rdd.count != 0) {
+      val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+      val rdds: RDD[String] = rdd.map(e => e.value().asInstanceOf[org.apache.avro.generic.GenericData.Record].toString)
+      val data = hiveContext.read.json(rdds)
+      data.printSchema()
+      data.show()
+//      data.registerTempTable("sourceData")
+//      hiveContext.sql("INSERT INTO TABLE default.kafka_demo_1 SELECT * FROM sourceData")
+
+      // some time later, after outputs have completed
+      stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
+
+    } else {
+      println("RDD is Empty - No data")
+    }
+  })
 
   ssc.start()
   ssc.awaitTermination()
