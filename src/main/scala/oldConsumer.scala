@@ -1,7 +1,7 @@
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
-import org.apache.avro.generic.GenericData$Record
+import org.apache.avro.generic.GenericData.Record
 import org.apache.spark.sql.{ Encoders, SparkSession }
 import org.apache.spark.streaming.{ StreamingContext, _ }
 import io.confluent.kafka.serializers.KafkaAvroDecoder
@@ -71,7 +71,7 @@ object oldConsumer extends App {
 //  }.foreachRDD(rdd => {
 //    if (rdd.count != 0) {
 //      val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
-//      val rdds: RDD[String] = rdd.map(e => e.value().asInstanceOf[org.apache.avro.generic.GenericData$Record].toString)
+//      val rdds: RDD[String] = rdd.map(e => e.value().asInstanceOf[org.apache.avro.generic.GenericData.Record].toString)
 //      val data = hiveContext.read.json(rdds)
 //      data.printSchema()
 //      data.show()
