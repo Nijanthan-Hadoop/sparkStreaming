@@ -20,7 +20,7 @@ object oldConsumer extends App {
     "key.deserializer" -> "io.confluent.kafka.serializers.KafkaAvroDeserializer",
     "value.deserializer" -> "io.confluent.kafka.serializers.KafkaAvroDeserializer",
     "schema.registry.url" -> "http://0.0.0.0:8081",
-    "auto.offset.reset" -> "smallest",
+    "auto.offset.reset" -> "earliest",
     "enable.auto.commit" -> (false: java.lang.Boolean),
     "group.id" -> "group1")
 
