@@ -4,7 +4,9 @@ import org.apache.spark.SparkContext
 import org.apache.avro.generic.GenericData$Record
 import org.apache.spark.sql.{ Encoders, SparkSession }
 import org.apache.spark.streaming.{ StreamingContext, _ }
+import io.confluent.kafka.serializers.KafkaAvroDecoder
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
+import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.{ CanCommitOffsets, HasOffsetRanges, KafkaUtils, OffsetRange }
@@ -27,6 +29,35 @@ object oldConsumer extends App {
   val topics = Array("nijavro")
   val stream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](topics, kafkaParams))
 //  stream.print()
+
+  val kafkaStream = KafkaUtils.createDirectStream[String, String](
+    ssc,
+    PreferConsistent,
+    Subscribe[String, String](topics, kafkaParams)
+  )
+  val schemaRegistyUrl="http://0.0.0.0:8081"
+  private lazy val schemaRegistry = new CachedSchemaRegistryClient(schemaRegistyUrl, 100)
+  private lazy val kafkaAvroDecoder = new KafkaAvroDecoder(schemaRegistry)
+  var listLine= ""
+  kafkaStream.foreachRDD { rdd =>
+    val offsets = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+    if (!rdd.isEmpty()) {
+      rdd.map(f => {
+        val line = kafkaAvroDecoder.fromBytes(f.value.getBytes).toString
+        println("Generated line is " + line)
+        listLine = listLine + line
+        val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+        val data = hiveContext.read.json(line)
+        data.printSchema()
+        data.show()
+//        data.createOrReplaceTempView("sourceData")
+//        hiveContext.sql("INSERT INTO TABLE default.kafka_demo_1 SELECT * FROM sourceData")
+//        kafkaStream.asInstanceOf[CanCommitOffsets].commitAsync(offsets)
+      })
+    } else {
+      println("######################## RDD is Empty! ########################")
+    }
+  }
 
   //ConsumerRecord(topic = test_mysql_sample, partition = 0, offset = 67, CreateTime = 1505379645403, checksum = 2903150596, serialized key size = -1, serialized value size = 19, key = null, value = {"c1":1,"c2":{"string":"a"},"c3":{"string":"b"}})
 

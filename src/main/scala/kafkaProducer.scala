@@ -3,7 +3,7 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import java.util.Properties
 import org.apache.avro.Schema.Parser
 import org.apache.avro.generic.GenericData
-
+import io.confluent.kafka.serializers.KafkaAvroSerializer
 case class User(name: String, favoriteNumber: Int, favoriteColor: String)
 
 
